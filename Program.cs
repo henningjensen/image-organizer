@@ -9,45 +9,33 @@ namespace image_organizer
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if (args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0])) {
+                Console.WriteLine("No file name given. Please provide a file name.");
+                return (int)ExitCode.InvalidFilename;
+            }
 
-            var p = new FileInfo(args[0]).FullName;
+            var fileInfo = new FileInfo(args[0]);
 
-            var metadata = new ImageMetadata(args[0]);
+            if (!fileInfo.Exists) {
+                Console.WriteLine("Invalid file name, cannot find file.");
+                return (int)ExitCode.InvalidFilename;
+            }
+
+            var metadata = new ImageMetadata(fileInfo);
 
             Console.WriteLine("Caption: " + metadata.Caption());
             Console.WriteLine("Directory: " + metadata.DirectoryName());
-            
-/*
-            IEnumerable<MetadataExtractor.Directory> directories = ImageMetadataReader.ReadMetadata(p);
-            var subIfdDirectory = directories.OfType<MetadataExtractor.Formats.Iptc.IptcDirectory>().FirstOrDefault();
-            var dateTime = subIfdDirectory?.GetDescription(MetadataExtractor.Formats.Iptc.IptcDirectory.TagCategory);
-            Console.WriteLine(dateTime);
 
-            var exifReader = new ExifLib.ExifReader(p);
-            
-            //Double[] latitude;
-            exifReader.GetTagValue<Double[]>(ExifLib.ExifTags.GPSLatitude, out Double[] latitude);
-
-            // Double[] longitude;
-            exifReader.GetTagValue<Double[]>(ExifLib.ExifTags.GPSLongitude, out Double[] longitude);
-
-            
-
-            Console.WriteLine(p);
-
-            if (latitude != null)
-                Console.WriteLine($"Lat: {latitude[0]},{latitude[1]}");
-            if (longitude != null)
-                Console.WriteLine($"Lon: {longitude[0]},{longitude[1]}");
-
-                 */
-
+            return (int)ExitCode.Success;
         }
+    }
 
-
-
+    enum ExitCode : int
+    {
+        Success = 0,
+        InvalidFilename = 2,
+        UnknownError = 10
     }
 }

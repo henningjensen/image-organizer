@@ -10,9 +10,9 @@ class ImageMetadata
     FileInfo _filePath;
     ExifReader _exifReader;
 
-    public ImageMetadata(string filepath)
+    public ImageMetadata(FileInfo filePath)
     {
-        _filePath = new FileInfo(filepath);
+        _filePath = filePath;
         _exifReader = new ExifReader(_filePath.FullName);
     }
 
