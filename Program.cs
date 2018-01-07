@@ -11,6 +11,7 @@ namespace image_organizer
     {
         static int Main(string[] args)
         {
+            /*
             if (args == null || args.Length == 0 || string.IsNullOrWhiteSpace(args[0])) {
                 Console.WriteLine("No file name given. Please provide a file name.");
                 return (int)ExitCode.InvalidFilename;
@@ -27,6 +28,12 @@ namespace image_organizer
 
             Console.WriteLine("Caption: " + metadata.Caption());
             Console.WriteLine("Directory: " + metadata.DirectoryName());
+            Console.WriteLine("DateTaken: " + metadata.DateTaken());
+ */
+            Console.WriteLine("input dir: " + args[0]);
+            Console.WriteLine("output dir: " + args[1]);
+
+            new FileManager().ProcessDirectory(new DirectoryInfo(args[0]), new DirectoryInfo(args[1]));
 
             return (int)ExitCode.Success;
         }
