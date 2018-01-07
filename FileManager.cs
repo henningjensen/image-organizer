@@ -8,7 +8,7 @@ namespace image_organizer
         public void ProcessDirectory(DirectoryInfo input, DirectoryInfo output)
         {
             ProcessFilesInDirectory(input, output);
-            
+
             foreach (DirectoryInfo directory in input.EnumerateDirectories())
             {
                 ProcessFilesInDirectory(input, output);
@@ -19,7 +19,8 @@ namespace image_organizer
         {
             foreach (FileInfo file in input.EnumerateFiles())
             {
-                if (file.Extension != ".jpg")
+                var fileExtension = file.Extension.ToLower();
+                if (fileExtension != ".jpg")
                     continue;
 
                 var metadata = new ImageMetadata(file);
@@ -29,11 +30,16 @@ namespace image_organizer
                 if (dateTaken == null)
                     continue;
 
-                int year = dateTaken.Value.Year;
-                int month = dateTaken.Value.Month;
+                string year = dateTaken.Value.ToString("yyyy");
+                string month = dateTaken.Value.ToString("MM");
 
                 DirectoryInfo destinationDirectory = output.CreateSubdirectory(year + "" + Path.DirectorySeparatorChar + month);
-                string finalDestination = Path.Combine(destinationDirectory.FullName, file.Name);
+                
+                string outputFileName = dateTaken.Value.ToString("yyyy-MM-dd_HHmmss");
+
+                string finalDestination = Path.Combine(destinationDirectory.FullName, outputFileName + fileExtension);
+
+                // TODO: Skip existing files with same file size
 
                 Console.WriteLine($"copying {file.FullName} to {finalDestination}");
 
