@@ -7,6 +7,8 @@ namespace image_organizer
     {
         public void ProcessDirectory(DirectoryInfo input, DirectoryInfo output)
         {
+            ProcessFilesInDirectory(input, output);
+            
             foreach (DirectoryInfo directory in input.EnumerateDirectories())
             {
                 ProcessFilesInDirectory(input, output);
