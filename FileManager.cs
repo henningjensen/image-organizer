@@ -19,57 +19,15 @@ namespace image_organizer
         {
             foreach (FileInfo file in input.EnumerateFiles())
             {
-                var fileExtension = file.Extension.ToLower();
-                if (fileExtension != ".jpg")
+
+                var imageFile = new ImageFile(file);
+
+                if (!imageFile.ShouldBeProcessed())
                     continue;
 
                 try
                 {
-                    var metadata = new ImageMetadata(file);
-
-                    DateTime? dateTaken = metadata.DateTaken();
-
-                    if (dateTaken == null)
-                        continue;
-
-                    string year = dateTaken.Value.ToString("yyyy");
-                    string month = dateTaken.Value.ToString("MM");
-
-                    DirectoryInfo destinationDirectory = output.CreateSubdirectory(year + "" + Path.DirectorySeparatorChar + month);
-
-                    string outputFileName = dateTaken.Value.ToString("yyyy-MM-dd_HHmmss");
-
-                    string finalDestination = Path.Combine(destinationDirectory.FullName, outputFileName + fileExtension);
-
-                    // TODO: Skip existing files with same file size
-
-                    var destinationFile = new FileInfo(finalDestination);
-                    if (destinationFile.Exists)
-                    {
-                        if (destinationFile.Length == file.Length)
-                        {
-                            Console.WriteLine("Skipping file, already exists: " + finalDestination);
-                            continue;
-                        }
-                        else
-                        {
-                            // same date, but different size
-                            int counter = 0;
-                            do 
-                            {
-                                counter++;
-                                string fileName = outputFileName + "_" + counter.ToString("D2") + fileExtension;
-                                finalDestination = Path.Combine(destinationDirectory.FullName, fileName);
-                            }
-                            while(new FileInfo(finalDestination).Exists);
-                            
-                        }
-                    }
-
-                    Console.WriteLine($"Copying {file.FullName} to {finalDestination}");
-
-                    file.CopyTo(finalDestination);
-
+                    imageFile.CopyTo(output);
                 }
                 catch (Exception e)
                 {
